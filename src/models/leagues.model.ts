@@ -12,6 +12,6 @@ const leagueSchema = new mongoose.Schema({
   teams: [mongoose.Types.ObjectId],
 });
 
-const League = mongoose.model<leagueDoc, any>("League", leagueSchema);
+const League = mongoose.model<leagueDoc, any>('League', leagueSchema);
 
 export { League };

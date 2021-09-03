@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 interface playerDoc extends mongoose.Document {
   name: string;
@@ -22,6 +22,6 @@ const playerSchema = new mongoose.Schema({
   born: Date,
 });
 
-const Player = mongoose.model<playerDoc, any>("Player", playerSchema);
+const Player = mongoose.model<playerDoc, any>('Player', playerSchema);
 
 export { Player };

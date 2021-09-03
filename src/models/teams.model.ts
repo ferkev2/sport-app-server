@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 interface teamDoc extends mongoose.Document {
   name: string;
@@ -12,6 +12,6 @@ const teamSchema = new mongoose.Schema({
   players: [mongoose.Types.ObjectId],
 });
 
-const Team = mongoose.model<teamDoc, any>("Team", teamSchema);
+const Team = mongoose.model<teamDoc, any>('Team', teamSchema);
 
 export { Team };
