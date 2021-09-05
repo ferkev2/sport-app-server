@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-interface playerDoc extends mongoose.Document {
+export interface playerDoc extends mongoose.Document {
   name: string;
   position: string;
   thumbnail: string;
@@ -24,4 +24,9 @@ const playerSchema = new mongoose.Schema({
 
 const Player = mongoose.model<playerDoc, any>('Player', playerSchema);
 
-export { Player };
+const allPlayerList = async (players: string[]): Promise<playerDoc[]> => {
+  const playerList = await Player.find({ _id: { $in: players } });
+  return playerList;
+};
+
+export { allPlayerList };

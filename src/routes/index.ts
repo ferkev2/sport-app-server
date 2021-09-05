@@ -1,7 +1,8 @@
 import express from 'express';
-import { Player } from '../models/players.model';
-import { Team } from '../models/teams.model';
-import { League } from '../models/leagues.model';
+import { allPlayerList } from '../models/players.model';
+import { findTeamById, findTeam } from '../models/teams.model';
+import { findLeague, findAllLeague } from '../models/leagues.model';
+import { playerListCurrenciesAdapt } from '../utils/utils';
 
 const router = express.Router();
 /**
@@ -20,7 +21,7 @@ router.get('/api/', async (req, res) => {
  */
 router.get('/api/leagues', async (req, res) => {
   try {
-    const leagues = await League.find();
+    const leagues = await findAllLeague();
     res.status(200).json(leagues);
   } catch (err) {
     console.error(err.message);
@@ -37,13 +38,11 @@ router.get('/api/search', async (req, res) => {
     if (league !== '' && league !== undefined) {
       const regex = `${league}`;
       const searchRegex = new RegExp(regex, 'gmi');
-      const leagueFound = await League.find({
-        name: { $regex: searchRegex },
-      });
+      const leagueFound = await findLeague(searchRegex);
 
-      if (leagueFound.length > 0) {
+      if (leagueFound && leagueFound.length > 0) {
         const { teams } = leagueFound[0];
-        const teamList = await Team.find({ _id: { $in: teams } });
+        const teamList = await findTeam(teams);
         res.status(200).json(teamList);
       } else {
         res.status(400).json([]);
@@ -63,17 +62,11 @@ router.get('/api/team/:id', async (req, res) => {
   try {
     const id = req.params.id;
     if (id) {
-      const team = await Team.findById({ _id: id });
+      const team = await findTeamById(id);
       if (team) {
         const { players } = team;
-        const playersList = await Player.find({ _id: { $in: players } });
-        const modifiedPlayerList = playersList.map((player: typeof Player) => {
-          if (player.signin.currency === 'gpp') {
-            player.signin.currency = 'gbp';
-          }
-          player.signin.currency = player.signin.currency.toUpperCase();
-          return player;
-        });
+        const playersList = await allPlayerList(players);
+        const modifiedPlayerList = playerListCurrenciesAdapt(playersList);
         res.status(200).json({
           playerList: modifiedPlayerList,
           team: team.name,

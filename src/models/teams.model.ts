@@ -14,4 +14,14 @@ const teamSchema = new mongoose.Schema({
 
 const Team = mongoose.model<teamDoc, any>('Team', teamSchema);
 
-export { Team };
+const findTeam = async (teams: string[]): Promise<teamDoc[]> => {
+  const teamList = await Team.find({ _id: { $in: teams } });
+  return teamList;
+};
+
+const findTeamById = async (id: string): Promise<teamDoc> => {
+  const team = await Team.findById({ _id: id });
+  return team;
+};
+
+export { findTeam, findTeamById };
